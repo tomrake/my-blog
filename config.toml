@@ -1,0 +1,67 @@
+baseURL = 'http://example.org/'
+languageCode = 'en-us'
+title = 'CL-REBASE'
+theme = "m10c"
+
+author = "Tom Rake"
+[params]
+  description = "A Design for easier .so and .dll location for Common Lisp."
+  avatar = "2665605.jfif"
+
+
+[[params.social]]
+  icon = "github-dark"
+  name = "Github"
+  url = "https://github.com/tomrake"
+
+[[params.social]]
+  icon = "reddit"
+  name = "tomrake"
+  url = "https://reddit.com/user/tomrake"
+
+[[params.social]]
+  icon = "mastodon"
+  name = "Mastodon"
+  url = "https://mastodon.social/@tomrake"
+
+[[params.social]]
+  icon = "discord"
+  name = "Discord"
+  url = "https://discordapp.com/users/tomrake1957#0816"
+
+# Green Theme
+
+# [params.style]
+#    darkestColor = "#315659"
+#    darkColor = "#253031"
+#    lightColor = "#96a879"
+#    lightestColor = "#fff"
+#    primaryColor = "#dad865"
+
+  # Red theme
+  # [params.style]
+  #  darkestColor = "#d35050"
+  #  darkColor = "#212121"
+  #  lightColor = "#d6d6d6"
+  #  lightestColor = "#d3d3d3"
+  #  primaryColor = "#ffffff"
+
+[[menu.main]]
+ name = "Home"
+ url = "/"
+ weight = "10"
+[[menu.main]]
+ name = "LISP DLL"
+ url = "/dll-project/"
+ weight = "20"
+
+[[menu.main]]
+ name = "Hugo Icons"
+ url = "/hugo-social-links"
+ weight = "30"
+ 
+[[menu.main]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/tags/"
+  weight = "60"

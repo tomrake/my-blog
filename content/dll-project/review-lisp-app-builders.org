@@ -1,0 +1,14 @@
+#+TITLE: To Be Done : Research Packaging and Deploying
+#+CATAGORIES: Research-List
+#+TAGS: Deployment-Systems
+#+WEIGHT: 40
+
+* Consider the Programmers Uses Cases
+To meet their goals programmer may specify a different version of an external binary.
+This is another usecase for configuration  of CL- type systems.
+
+* Lisp Packaging
+Software that deploys Lisp software may influence the external configuration objective.
+- [[https://github.com/Shinmera/deploy][deploy]] by Nicolas Hafner AKA Shimera, likely uses this to deploy his games.
+- [[https://github.com/xach/buildapp][buildapp]] by Zach Beane, has not been updated since 2015
+- [[https://github.com/markcox80/lisp-executable][lisp-executable]] by Marc Cos, has not been updated since 2015

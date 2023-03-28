@@ -1,0 +1,4 @@
+#+TITLE: Common Lisp, Shared Object Project
+
+Consider helping the user configure the location for external library files (.dll,.so and .mylib) on systems
+that define CFFI interfaces for those systems. This hands power to the user to find a path the developer is just guessing at.

@@ -1,0 +1,31 @@
+#+TITLE: Objective
+#+CATAGORIES: Goal
+#+TAGS: Statement
+#+WEIGHT: 10
+* Objective
+
+Make Common Lisp software easier to use by newbies, help others customize shared object used Lisp program delivery.
+
+* Shared Objects to C/C++ routines
+
+These are the .so, .dll and, .mylib files which represent functions and data in C/C++.
+These C/C++ libraries are exploited in many software systems and are used by many systems available on quicklisp.
+
+* Method to Objective
+
+Convince others to create an easy customization method to find shared object files.
+
+
+* CL+SSL is the model 
+
+The system CL+SSL allows the programmer to customize the location of shared object files.
+
+* Workable on Windows
+
+The CL+SSL/config system works for me on Windows.
+It is so simple it is likely a workable for most external library interfaces to C/C++ libraries.
+
+* Programmer make the choice
+
+This is really about giving the programmer the OPTION to select the external C/C++ rather than letting the OS making that choice.
+And correcting when the OS makes the wrong choice.
