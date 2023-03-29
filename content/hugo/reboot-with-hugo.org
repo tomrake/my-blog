@@ -1,0 +1,14 @@
+#+TITLE: Reboot With Hugo
+#+DATE: 2023-03-28T12:04:31-04:00
+#+DRAFT: true
+
+* Restarting my +blog+ site
+My [[https://tomrake.github.io][old site]], a blog format, was previously done with [[https://beautifuljekyll.com/][Beautiful Jekyll]],
+and never attemmpted the Static Site learning curve with Jekyll.
+I am rebooting my blog with a [[https://gohugo.io/][Hugo]], I really desired to see pages locally before pushing the site,
+restructuring the site as a series of content area is also appealing.
+So I began the review of Static Site Generators from [[https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node9.html][nil]].
+
+
+
+

@@ -1,0 +1,19 @@
+#+TITLE: Selection Hugo and Themes
+#+DATE: 2023-03-28T13:58:32-04:00
+#+DRAFT: true
+* How and Why I chose Hugo?
+
+I want to thank [[https://peterprevos.com/][Peter Prevos]] for this [[https://lucidmanager.org/productivity/create-websites-with-org-mode-and-hugo/][article]] which started my trip into hugo site generation.
+The choice was based on authoring in [[https://orgmode.org/][org mode]] from [[https://www.gnu.org/software/emacs/][Emacs]] and 
+has a local server mode.
+Now I started the Hugo theme learning curve, [[https://www.mikedane.com/][Mike Dane]] has good explanations on [[https://www.youtube.com/@GiraffeAcademy]].
+
+
+* Theme selection
+
+Following the hugo installatio instructions I created the experimental site by
+#+begin_src sh
+  hugo new site experimmental
+#+end_src
+The next task was to select a theme. I created various hugo sites all named after various theme.
+And began to construct text for my pages, I did this and settled on the [[https://github.com/vaga/hugo-theme-m10c][m10c]] theme.

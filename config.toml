@@ -1,11 +1,11 @@
 baseURL = 'http://example.org/'
 languageCode = 'en-us'
-title = 'CL-REBASE'
+title = "Tom's Site"
 theme = "m10c"
 
 author = "Tom Rake"
 [params]
-  description = "A Design for easier .so and .dll location for Common Lisp."
+  description = "My discussion about various technical things."
   avatar = "2665605.jfif"
 
 
@@ -56,8 +56,8 @@ author = "Tom Rake"
  weight = "20"
 
 [[menu.main]]
- name = "Hugo Icons"
- url = "/hugo-social-links"
+ name = "Hugo"
+ url = "/hugo/"
  weight = "30"
  
 [[menu.main]]

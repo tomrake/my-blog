@@ -1,0 +1,59 @@
+#+TITLE: I needed to add additional Feather Icons
+#+DATE: 2023-03-28T21:14:38-04:00
+#+DRAFT: true
+
+* Social Icons in m10c
+
+Are from the set [[https://feathericons.com/][feather icons]] but do not offer a reddit icon.
+You refer to the icon by name in config.toml and  svg path strokes which are apparent from the final html code.
+I explored the mechanism of page construction in the theme. 
+
+** SVG Icons 
+
+All my references to m10c code refer to [[https://github.com/vaga/hugo-theme-m10c/tree/1adc079e39fe999191d8829c676d546c047acc45]] version of m10c theme.
+The m10c theme inserts all social icons this base document
+[[https://github.com/vaga/hugo-theme-m10c/blob/1adc079e39fe999191d8829c676d546c047acc45/layouts/_default/baseof.html#L34-L41][layouts/_default/baseof.html]]
+and format the icon in [[https://github.com/vaga/hugo-theme-m10c/blob/1adc079e39fe999191d8829c676d546c047acc45/layouts/partials/icon.html][layouts/partials/icon.html]]
+with the icon path selected by name from the json file [[https://github.com/vaga/hugo-theme-m10c/blob/1adc079e39fe999191d8829c676d546c047acc45/data/m10c/icons.json][data/m10c/icons.json]].
+
+** Format of the json file
+
+The file is a long single line list of comma separated key:value strings where the key string is the name of the icon and the value is the set of svg paths.
+
+* Adding a new icon
+
+
+** The technic
+
+Do the drawing with svg primitives in a viewbox 0 0 24 24.
+Then insert the svg drawing into the json file under the correct named key.
+In Emacs I could split the long json list by M-x json-pretty-print, add the "tag":"path string".
+Next create a single line again with second version of code on this
+[[https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line][Stack Overflow Page]].
+
+** First Attempt - drafted Reddit icon - Failure
+
+I spent several hours in Inkscape tracing a reddit icon at 24px by 24px.
+I managed to insert a "reddit":, an ellipse path, and finally the entire reddit logo as a stroked path.h
+The 2pt stroke was too heavy this effort was a failure, expect for the icon.json editing succes.
+
+
+** A branded Reddit Icon - Success
+
+[[https://feathericons.dev/?iconset=brands][branded feather icons]] were eventually discovered, no license restrictions.
+The branded version now replaced my own created graphic.
+The graphic showed but icon.html added the rest of svg with a 2px stroke, ugly again.
+Adding a stroke="none" property to the branded drawing removed the strokes, this reddit icon is success.
+
+** Create a dark and lite version of the branded Github icon - Sucess
+
+Next I replaced the stroked version of the github icon with a filled path version and needed to create a dark and lite version by changing the fill color of the lite version.
+
+** A branded Disord Icon - Success
+
+I am getting in the grove.
+
+** Rescale and Translate the Mastodon Logo - Sucess 
+
+There was no branded version of Mastodon icon, but mastodon provided svg graphics for their own icon.
+I added a svg:g section to scale and center the icon in the 0 0 24 25 viewbox.
