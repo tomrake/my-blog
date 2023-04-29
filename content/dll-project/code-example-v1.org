@@ -1,18 +1,18 @@
-#+TITLE: The NEEDED example implemenation hints
+#+TITLE: The NEEDED example implementation hints
 #+TAGS: 
 #+CATAGORIES: Code-Example
 #+WEIGHT: 30
-This is the skeleton model on how to implement binary library configuration.
 
-External C, and C++ libraries are available in .so, dll and .mylib file formats.
-Using CFFI a Common Lisp interface system is written to allow the use of the functions and structures from the foreign library.
+The CL+SSL system implements the desirable configuration mechanism, where the user can specify the location of .so, .mylib, and .dll files.
+This is the skeleton model of how another interface library can implement binary library configuration.
 
-The location of the .so, .dll or .mylib file on the users computer could be guessed,
-but as a last resort give the user the ability to specifiy that location.
+External C and C++ libraries are available in .so, .dll, and .mylib file formats.
+Using CFFI a Common Lisp interface system is written to allow the use of the functions and structures from that foreign library.
+
+The location of the .so, .dll, or .mylib file on the user's computer could be guessed,
+but as a last resort give the user the ability to specify that location.
 -----
-The example model:
-
-Assume NEEDED is replace by the name of the library.
+In this example mode, I am assuming the term, or token, NEEDED is replaced by the name of the library.
 
 * Purpose
 
@@ -24,14 +24,14 @@ in the case of external library version updates.
 There are three parts:
 - the config system definition
 - the config system implementation
-- where your inferface code expects to load the library.
+- where your interface code expects to load the library.
 ** Define the config  secondary system
 #+BEGIN_SRC lisp
   (defsystem cl-NEEDED/config
-    (depends-on "CFFI")
+    (depends-on "CFFI"))
 #+END_SRC
-** Create the config packaage implementation
-To allow your cl-NEEDED system to be configured a secondary system called cl-NEEDED/config should be simliar to this:
+** Create the config package implementation
+To allow your cl-NEEDED system to be configured a secondary system called cl-NEEDED/config should be similar to this:
 #+BEGIN_SRC lisp
   (defpackage :cl-NEEDED/config
     (:use
@@ -54,14 +54,14 @@ To allow your cl-NEEDED system to be configured a secondary system called cl-NEE
 
 ** Where your  interface  expects to load the library
 
-The override system defines a CFFI library, libNEEDED with a pass with assumption that a (cffi:load-library libNEEDED).
+The override system defines a CFFI library, libNEEDED with a pass with the assumption that a (cffi:load-library libNEEDED).
 This code assumes that the library location guessing code will result in a call to of (cffi:define-foreign-library libNEEED (t path-you-checked)).
 
 
-This code show a macro definition that does that:
+This code shows a macro definition that does that:
 #+BEGIN_SRC lisp
   (unless cl-NEEDED/config::*libNEEDED-override*
-    ;; Your legacy  path finding code goes here.
+    ;; Your legacy path-finding code goes here.
     ;; You are trying to find the libNEEDED path for cffi
   )
   (cffi:load-library libNEEDED)
@@ -69,7 +69,7 @@ This code show a macro definition that does that:
 -----
 *  Simple Use Case: a  config-NEEDED package.
 
-The most simple example is for a programmer write her own configuration for NEEDED,
+The most simple example is for a programmer to write her configuration for NEEDED,
 by adding the correct path in main/preload function.
 Now as long as her use of NEEDED occurs after config-NEEDED is loaded, NEEDED will use her configuration.
 
@@ -86,7 +86,7 @@ This is an asd for the system to configure the cl-NEEDED
   :components ((:file "main")))
 #+END_SRC
 
-** System implemenation
+** System implementation
 
 The config-NEEDED/main.lisp is where we call define-NEEDED-lib with the hardcoded path to the correct library file.
 
@@ -101,7 +101,7 @@ The config-NEEDED/main.lisp is where we call define-NEEDED-lib with the hardcode
   (in-package #:config-NEEDED/main)
 
   (defun do-configure ()
-    ;; Your will need to change this for your own case.
+    ;; Your will need to change this for your use case.
     (define-NEEDED-lib "c:/my/path/to/NEEDED.dll"))
 
   (do-configure)

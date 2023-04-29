@@ -1,0 +1,13 @@
+#+TITLE: First Analysis of C2FFI on Windows
+#+DATE: 2023-04-02T16:51:36-04:00
+#+DRAFT: true
+
+Several years ago I debugged cl-sdl2 code and came to the beliefe that I needed a properly produced .spec file for sdl2.h.
+
+* Random Notes
+- Each llvm version is likely to correspond to a spec versioning.
+- The derived functio interface code should not vary a lot because it is a some version of C.
+- The sdl2 spec files are about a year old.
+- cffi branch 14.0.0 last  update Jul, 28 2022
+- c2ffi is version sensitive because of the exact format of the intermediate AST elements.
+- cl-sdl2 the spec files were update from 8.0.0.1 to 13.0.0.1 on April 11, 2022

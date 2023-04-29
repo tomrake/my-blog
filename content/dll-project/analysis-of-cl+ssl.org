@@ -2,36 +2,83 @@
 #+CATAGORIES: Analyis
 #+TAGS: System
 #+WEIGHT: 20
+
+CL+SSL implements a config system that allows the user to customize the location of the needed .so, .mylib, or .dll external files.
+I believe this mechanism is a big win for the Common Lisp community.
 This is my analysis of the configuration of external library paths available in CL+SSL.
 
-The version of CL+SSL I am commenting on [[https://github.com/cl-plus-ssl/cl-plus-ssl/tree/1e2ffc9511df4b1c25c23e0313a642a610dae352][this version of source code]].
+*  The Terms I Use
 
-* The .asd
+External Library - non-lisp code libraries usually the  .so, .mylib,  or .dll file types.
 
-[[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/cl%2Bssl.asd][cl+ssl/cl+ssl.asd]] defines that cl+ssl depends-on the system cl+ssl/config, but cl+ssl/config is not a component of cl+ssl.
-[[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/cl%2Bssl.asd#L46-L50][The systme cl+ssl/config]] is a secondary system, which need to be loaded before the main system.
+Interface Library - lisp FFI code that allows the use of External Libraries.
 
-If another system loads cl+ssl/config uses the exported define-lib-path macros before cl+ssl is loaded, cl+ssl will use those definitions.
+Guessing Code -  the part of the Interface Library that attempts to find the .so, .mylib, or .dll file which contains the External Library.
 
-* src/config.lisp
+Certain Location - A location the user or programmer knows for certain to find the External Library. 
+-----
 
-cl+ssl need two external libaries, libssl and libcrypto so the operations are done for each library.
-Two override flags are defined in cl+ssl/config as lisp special variable [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L33][\ast{}libssl-override\ast{}]] and [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L34][\ast{}libcrypto-override\ast{}]] each of which are initialized to nil.
-A Macro [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L36-L42][(define-libssl-path path)]] and [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L44-L50][(define-libcrypto-path path)]] both call cffi:define-foreign-lbrary with a path and define symbols libssl and libcrypto respectfully.
-Each macro [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L28-L29][exported in lines 28 and 29]].
 
-The [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L11-L27][Documenation String]] has fairly accurate usage decription.
-Also note about [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L53-L80][deprecation of :cl+ssl-foreign-libs-already-loaded feature]] which was a previous mechanism for defining how to load the libraries.
+* The Problem
 
-* src/reload.lisp
+The Guessing Code does not know the Certain Location and throws a condition on loading of the Interface Library.
 
-[[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp][src/reload.lisp]] is where the cl+ssl actually tries to load the foreign libraries.
 
-The file consists of [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L91-L139][libcrpto lib search]] and [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L141-L191][libssl lib search]] with [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L20-L53][code for macos that neither windows or linux needs]].
-The libraries are [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L193-L196][actually loaded]] by the final four lines of the top two are a guard based on the to be [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L53-L80][deprecation of :cl+ssl-foreign-libs-already-loaded feature]]  flag.
-Effectively each lib path search in an unless form based on one of the override flags.
 
+* The Solution
+
+The interface libraries to external libraries should have a configuration option to locate the external file containing that library.
+The user configures the interface library by indicating the Certain Location.
+
+The CL+SSL system allows the user to call macros from the CL+SSL/config package to set the Certain Location for libssl and libcrypto which are External Libraries needed by the Interface Library.
+-----
+* The Gory Details
+
+** About  the Code
+
+The source version of the CL+SSL code is [[https://github.com/cl-plus-ssl/cl-plus-ssl/tree/1e2ffc9511df4b1c25c23e0313a642a610dae352]].
+
+The code is written using the CFFI foreign function library system.
+
+** The system definition, the  cl+ssl.asd
+
+cl+ssl is specified by the [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/cl%2Bssl.asd][cl+ssl.asd]] which also specifes a secondary system  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/cl%2Bssl.asd#L46-L50][cl+ssl/config]].
+The system cl+ssl is dependent on  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/cl%2Bssl.asd#L46-L50][cl+ssl/config]] and thus must be loaded before the cl+ssl system.
+To use a fully configured cl+ssl the user must use the package cl+ssl/config and call the "define-libxxxx-path" macros before using the package cl+ssl.
+
+
+** The config package - src/config.lisp
+
+cl+ssl requires libssl and libcrypto, which are external libraries, the user can configure the location for the package cl+ssl/config.
+cl+ssl/config specifies  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L33][\ast{}libssl-override\ast{}]] and [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L34][\ast{}libcrypto-override\ast{}]] which I refer to as "override flags" both of which are initialized to nil.
+The macros  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L36-L42][(define-libssl-path path)]] and [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L44-L50][(define-libcrypto-path path)]] both call cffi:define-foreign-lbrary with a path and define symbols libssl and libcrypto respectfully.
+In addition, the "override flags" are marked as true, which indicates the configurator knows the correct path to the library.
+You can see the source where the macros are being  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L28-L29][exported in lines 28 and 29]].
+
+The [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L11-L27][Documentation String]] has an accurate usage description of the path definition process.
+Also, note the deprecation of the [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L53-L80][cl+ssl-foreign-libs-already-loaded feature]] being the previous mechanism for defining how to externally load the libraries.
+
+config.lisp enforces the following conditions, when the override flag is true the Certain Location is set in the CFFI:libssl or CFFI:libcrypo variable.
+When the override flag is nil the external library location is determined by the guessing code.
+
+** src/reload.lisp
+
+When no override is called for the guessing code searches and stores it in the CFFI:libssl or CFFI:libcrypo
+But when the override is called for all the guessing code is bypassed because of the known Certain Location.
+
+reload.lisp has four sections:
+First, [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L20-L53][MacOS code that is not required on Windows or Linux]].
+Second, a [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L91-L139][libcrypto lib search]] section guarded by libcrypto override flags.
+Third, a  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L141-L191][libssl lib search]] section guarded by libssl override flag. 
+Forth, the libraries are [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/reload.lisp#L193-L196][loaded]] by the final four lines of code, where two are guarded based on the deprecation of the  [[https://github.com/cl-plus-ssl/cl-plus-ssl/blob/1e2ffc9511df4b1c25c23e0313a642a610dae352/src/config.lisp#L53-L80][cl+ssl-foreign-libs-already-loaded feature]] flag.
+
+#+begin_src lisp
+  (unless *override*
+    (a lot of guessing for libxxxx-paths))
+  (load-foreign-library libxxxx)
+#+end_src
+-----
 * My test on windows
 
-Using the above config method I could load cl+ssl with mingw64 verions of ssl libraries and downloaded current verions of OpsnSSL libraries.
-
+Using the above config method, loading cl+ssl with mingw64 versions of OpenSSL libraries was successful.
+The current Windows version of OpenSSL libraries also worked as expected.

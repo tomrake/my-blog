@@ -5,7 +5,7 @@ theme = "m10c"
 
 author = "Tom Rake"
 [params]
-  description = "My discussion about various technical things."
+  description = "My discussions about various technical matters."
   avatar = "2665605.jfif"
 
 
